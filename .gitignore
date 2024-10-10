@@ -1,0 +1,8 @@
+# Eclipse project files
+.classpath
+.project
+.settings/
+
+# Directorios de salida o compilación
+bin/
+target/
