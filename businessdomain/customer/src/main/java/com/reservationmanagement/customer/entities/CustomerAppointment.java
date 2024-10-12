@@ -21,7 +21,7 @@ public class CustomerAppointment {
 	private long id;
 	private long appointmentId;
 	@Transient
-	private String appointmentTime;
+	private String appointmentDetail;
 	
 	@JsonIgnore //it is necesary for avoid infinite recursion
 	@ManyToOne(fetch = FetchType.LAZY, targetEntity = Customer.class)

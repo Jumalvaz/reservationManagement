@@ -7,10 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Data;
-/**
- *
- * @author Jumalvaz
- */
+
 @Data
 @Entity
 public class Appointment {

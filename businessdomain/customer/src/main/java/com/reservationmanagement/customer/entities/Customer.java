@@ -12,10 +12,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Transient;
 import lombok.Data;
 
-/**
- *
- * @author Jumalvaz
- */
 @Data
 @Entity
 public class Customer {

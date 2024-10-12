@@ -1,13 +1,18 @@
 package com.reservationmanagement.customer.controller;
 
 import java.time.Duration;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,10 +20,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.reservationmanagement.customer.entities.Customer;
+import com.reservationmanagement.customer.entities.CustomerAppointment;
 import com.reservationmanagement.customer.respository.CustomerRepository;
 
 import io.netty.channel.ChannelOption;
@@ -95,6 +103,32 @@ public class CustomerRestController {
 	public ResponseEntity<?> delete(@PathVariable long id) {
 		customerRepository.deleteById(id);
 		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
+	@GetMapping("/email")
+	public Customer getByEmail(@RequestParam String email) {
+		Customer customer = customerRepository.findByEmail(email);
+		List<CustomerAppointment> appointments = customer.getAppointments();
+		appointments.forEach(appointment ->{
+			String appointmentDetail = getAppointmentDetail(appointment.getId());
+			appointment.setAppointmentDetail(appointmentDetail);
+		});
+		
+		return customer;
+	}
+	
+	private String getAppointmentDetail(long id) {
+		WebClient build = webClientBuilder.clientConnector(new ReactorClientHttpConnector(client))
+				.baseUrl("http://localhost:8082/appointment")
+				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+				.defaultUriVariables(Collections.singletonMap("url", "http://localhost:8082/appointment"))
+				.build();
+		
+		JsonNode block = build.method(HttpMethod.GET).uri("/" + id)
+				.retrieve().bodyToMono(JsonNode.class).block();
+		
+		String detail = block.get("detail").asText();
+		return detail;
 	}
 
 }
