@@ -109,14 +109,25 @@ public class CustomerRestController {
 	public Customer getByEmail(@RequestParam String email) {
 		Customer customer = customerRepository.findByEmail(email);
 		List<CustomerAppointment> appointments = customer.getAppointments();
+		
+		//for each appointment find it detail
 		appointments.forEach(appointment ->{
 			String appointmentDetail = getAppointmentDetail(appointment.getId());
 			appointment.setAppointmentDetail(appointmentDetail);
 		});
 		
+		//find all transactions that belong this email
+		List<?> transactions = getTransactions(email);
+		customer.setTransactions(transactions);
+		
 		return customer;
 	}
 	
+	/**
+	 * Call Appointment Microservice, find a appointment by id and return it detail
+	 * @param id
+	 * @return
+	 */
 	private String getAppointmentDetail(long id) {
 		WebClient build = webClientBuilder.clientConnector(new ReactorClientHttpConnector(client))
 				.baseUrl("http://localhost:8082/appointment")
@@ -129,6 +140,27 @@ public class CustomerRestController {
 		
 		String detail = block.get("detail").asText();
 		return detail;
+	}
+	
+	/**
+	 * Call Transaction Microservice, find transactions by email
+	 * @param email
+	 * @return
+	 */
+	private List<?> getTransactions(String email){
+		WebClient build = webClientBuilder.clientConnector(new ReactorClientHttpConnector(client))
+				.baseUrl("http://localhost:8083/transactions")
+				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+				.defaultUriVariables(Collections.singletonMap("url", "http://localhost:8083/transactions"))
+				.build();
+		
+		List<?> transactions = build.method(HttpMethod.GET).uri(uriBuilder -> uriBuilder
+				.path("/customer/transactions")
+				.queryParam("email", email)
+				.build())
+				.retrieve().bodyToFlux(Object.class).collectList().block();
+		
+		return transactions;
 	}
 
 }

@@ -15,6 +15,7 @@
     <modules>
         <module>customer</module>
         <module>appointment</module>
+        <module>transactions</module>
     </modules>
     
     
