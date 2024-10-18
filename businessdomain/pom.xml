@@ -24,7 +24,8 @@
         <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>   
         <org.lombo.version>1.18.30</org.lombo.version>    
         <org.springdoc.version>2.3.0</org.springdoc.version>     
-        <org.mockito.version>5.7.0</org.mockito.version>         
+        <org.mockito.version>5.7.0</org.mockito.version>  
+        <org.modelmapper.version>2.3.8</org.modelmapper.version>       
     </properties>
     
     <dependencyManagement>
@@ -91,7 +92,13 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
-        </dependency>   
+        </dependency>  
+        
+        <dependency>
+        	<groupId>org.modelmapper</groupId>
+        	<artifactId>modelmapper</artifactId>
+        	<version>${org.modelmapper.version}</version>
+        </dependency> 
      <dependency>
     <groupId>com.github.javafaker</groupId>
     <artifactId>javafaker</artifactId>
