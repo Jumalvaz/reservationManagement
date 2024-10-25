@@ -1,0 +1,20 @@
+#CONFIGURACIÓN ENTORNO DESARROLLO
+springdoc:
+  swagger-ui:
+    path: /swagger.html
+    enabled: true
+
+server:
+  port: 8083
+
+spring:
+  jpa:
+    show-sql: false
+  datasource:
+    url: jdbc:h2:mem:transactions
+    username: sa
+    password: sa
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: true
