@@ -31,4 +31,7 @@
         </dependencies>
     </dependencyManagement>
     
+    <modules>
+    	<module>configServer</module>
+    </modules>
 </project>
