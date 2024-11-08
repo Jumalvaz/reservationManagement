@@ -2,3 +2,23 @@
 spring:
   profiles:
     active: dev
+  application:
+    name: businessdomain-product
+  cloud:
+    config:
+      enabled: false
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVER:http://localhost:8761/eureka/}
+    register-with-eureka: true
+    fetch-registry: true
+    healthcheck:
+      enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
