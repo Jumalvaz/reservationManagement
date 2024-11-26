@@ -3,7 +3,7 @@ spring:
   profiles:
     active: dev
   application:
-    name: businessdomain-product
+    name: businessdomain-transaction
   cloud:
     config:
       enabled: false
@@ -16,6 +16,11 @@ eureka:
     fetch-registry: true
     healthcheck:
       enabled: true
+  instance:
+    prefer-ip-address: true
+    hostname: localhost
+    appname: BUSINESSDOMAIN-TRANSACTION
+#    instanceId: ${spring.application.name}
 
 management:
   endpoints:

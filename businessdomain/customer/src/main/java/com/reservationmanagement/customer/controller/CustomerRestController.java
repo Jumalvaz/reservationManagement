@@ -42,11 +42,8 @@ public class CustomerRestController {
 	@Autowired
 	CustomerRepository customerRepository;
 	
-	private final WebClient.Builder webClientBuilder;
-	
-	public CustomerRestController(WebClient.Builder webClientBuilder) {
-		this.webClientBuilder = webClientBuilder;
-	}
+	@Autowired
+	private WebClient.Builder webClientBuilder;
 	
 	HttpClient client = HttpClient.create()
 		//Connection timeout
@@ -117,8 +114,8 @@ public class CustomerRestController {
 		});
 		
 		//find all transactions that belong this email
-		List<?> transactions = getTransactions(email);
-		customer.setTransactions(transactions);
+//		List<?> transactions = getTransactions(email);
+//		customer.setTransactions(transactions);
 		
 		return customer;
 	}
@@ -135,6 +132,12 @@ public class CustomerRestController {
 				.defaultUriVariables(Collections.singletonMap("url", "http://localhost:8082/appointment"))
 				.build();
 		
+		//EUREKA SERVER
+//		WebClient build = webClientBuilder
+//				.baseUrl("http://APPOINTMENT/appointment")
+//				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+//				.build();
+		
 		JsonNode block = build.method(HttpMethod.GET).uri("/" + id)
 				.retrieve().bodyToMono(JsonNode.class).block();
 		
@@ -149,9 +152,9 @@ public class CustomerRestController {
 	 */
 	private List<?> getTransactions(String email){
 		WebClient build = webClientBuilder.clientConnector(new ReactorClientHttpConnector(client))
-				.baseUrl("http://localhost:8083/transactions")
+				.baseUrl("http://BUSINESSDOMAIN-TRANSACTION/transactions")
 				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-				.defaultUriVariables(Collections.singletonMap("url", "http://localhost:8083/transactions"))
+				.defaultUriVariables(Collections.singletonMap("url", "http://BUSINESSDOMAIN-TRANSACTION/transactions"))
 				.build();
 		
 		List<?> transactions = build.method(HttpMethod.GET).uri(uriBuilder -> uriBuilder
